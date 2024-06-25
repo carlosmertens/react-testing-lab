@@ -1,7 +1,7 @@
 import { it, expect, describe } from 'vitest';
 
-describe('group', () => {
-  it('should', () => {
+describe('environment setup', () => {
+  it('should run test', () => {
     expect(1).toBeTruthy();
   });
 });
