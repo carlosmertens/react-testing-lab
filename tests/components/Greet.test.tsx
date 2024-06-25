@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import Greet from '../../src/components/Greet';
+import { Greet } from '../../src/components/Greet';
 
 describe('Greet component', () => {
   it('should render with a name when name is provided', () => {

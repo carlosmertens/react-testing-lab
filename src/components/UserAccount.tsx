@@ -1,6 +1,6 @@
-import { User } from "../entities";
+import { User } from '../entities';
 
-const UserAccount = ({ user }: { user: User }) => {
+export function UserAccount({ user }: { user: User }) {
   return (
     <>
       <h2>User Profile</h2>
@@ -10,6 +10,4 @@ const UserAccount = ({ user }: { user: User }) => {
       </div>
     </>
   );
-};
-
-export default UserAccount;
+}
