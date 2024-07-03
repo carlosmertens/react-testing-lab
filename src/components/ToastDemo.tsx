@@ -1,11 +1,9 @@
-import toast from "react-hot-toast";
+import toast from 'react-hot-toast';
 
-const ToastDemo = () => {
+export function ToastDemo() {
   return (
-    <button className="btn" onClick={() => toast.success("Success")}>
+    <button className='btn' onClick={() => toast.success('Success')}>
       Show Toast
     </button>
   );
-};
-
-export default ToastDemo;
+}
