@@ -5,15 +5,20 @@ import userEvent from '@testing-library/user-event';
 
 describe('OrderStatusSelector component', () => {
   const renderComponent = () => {
+    const onChange = vi.fn();
+
     render(
       <Theme>
-        <OrderStatusSelector onChange={vi.fn()} />
+        <OrderStatusSelector onChange={onChange} />
       </Theme>
     );
 
     return {
       trigger: screen.getByRole('combobox'),
       getOptions: () => screen.findAllByRole('option'),
+      getOption: (label: RegExp) =>
+        screen.findByRole('option', { name: label }),
+      onChange,
     };
   };
 
@@ -31,5 +36,35 @@ describe('OrderStatusSelector component', () => {
     expect(options).toHaveLength(3);
     const labels = options.map(option => option.textContent);
     expect(labels).toEqual(['New', 'Processed', 'Fulfilled']);
+  });
+
+  test.each([
+    { label: /processed/i, value: 'processed' },
+    { label: /fulfilled/i, value: 'fulfilled' },
+  ])(
+    'should call onChange with $value when selected',
+    async ({ label, value }) => {
+      const { trigger, onChange, getOption } = renderComponent();
+      await userEvent.click(trigger);
+
+      const option = await getOption(label);
+      await userEvent.click(option);
+
+      expect(onChange).toHaveBeenCalledWith(value);
+    }
+  );
+
+  it("should call on change with 'new' when selected", async () => {
+    const { trigger, onChange, getOption } = renderComponent();
+    await userEvent.click(trigger);
+
+    const processedOption = await getOption(/fulfilled/i);
+    await userEvent.click(processedOption);
+
+    await userEvent.click(trigger);
+    const newOption = await getOption(/new/i);
+    await userEvent.click(newOption);
+
+    expect(onChange).toHaveBeenCalledWith('new');
   });
 });
