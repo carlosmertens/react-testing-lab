@@ -6,12 +6,16 @@ Testing lab for testing react components with trending technologies.
 
 This is a React app built with the following technologies and libraries:
 
-- Auth0
-- Tailwind
-- RadixUI
-- React Router
-- React Query
-- Redux Toolkit
+- [Auth0](https://auth0.com/docs)
+- [Tailwind](https://tailwindcss.com/)
+- [RadixUI](https://www.radix-ui.com/)
+- [React Router](https://reactrouter.com/en/main)
+- [React Query](https://tanstack.com/query/latest)
+- [Redux Toolkit](https://redux-toolkit.js.org/introduction/getting-started)
+- [Vitest](https://vitest.dev/guide/)
+- [Mock Servvice Worker](https://mswjs.io/docs)
+- [mswjs/data](https://github.com/mswjs/data)
+- [Faker](https://fakerjs.dev/guide/usage.html)
 
 Please follow these instructions carefully to setup this project on your machine.
 
