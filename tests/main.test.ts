@@ -1,10 +1,9 @@
-import { it, expect, describe } from 'vitest';
+import { db } from './mocks/db';
 
 describe('environment setup', () => {
+  const product = db.product.create();
+  // console.log(product);
   it('should run test', () => {
-    // const response = await fetch('/categories');
-    // const data = await response.json();
-    // console.log(response);
-    expect(1).toBeGreaterThan(0);
+    expect(product.price).toBeGreaterThan(0);
   });
 });

@@ -1,20 +1,22 @@
-import { http, HttpResponse } from 'msw';
-import { categories, products } from './data';
+import { db } from './db';
+// import { http, HttpResponse } from 'msw';
+// import { categories, products } from './data';
 
 export const handlers = [
-  http.get('/categories', () => {
-    return HttpResponse.json(categories);
-  }),
+  ...db.product.toHandlers('rest'),
+  // http.get('/categories', () => {
+  //   return HttpResponse.json(categories);
+  // }),
 
-  http.get('/products', () => {
-    return HttpResponse.json(products);
-  }),
+  // http.get('/products', () => {
+  //   return HttpResponse.json(products);
+  // }),
 
-  http.get('/products/:id', ({ params }) => {
-    const id = Number(params.id as string);
-    const product = products.find(p => p.id === id);
-    if (!product) return new HttpResponse(null, { status: 404 });
+  // http.get('/products/:id', ({ params }) => {
+  //   const id = Number(params.id as string);
+  //   const product = products.find(p => p.id === id);
+  //   if (!product) return new HttpResponse(null, { status: 404 });
 
-    return HttpResponse.json(product);
-  }),
+  //   return HttpResponse.json(product);
+  // }),
 ];
