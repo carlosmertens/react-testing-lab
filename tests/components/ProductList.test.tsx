@@ -1,5 +1,9 @@
-import { render, screen } from '@testing-library/react';
-import { http, HttpResponse } from 'msw';
+import {
+  render,
+  screen,
+  waitForElementToBeRemoved,
+} from '@testing-library/react';
+import { http, HttpResponse, delay } from 'msw';
 import { ProductList } from '../../src/components/ProductList';
 import { server } from '../mocks/server';
 import { db } from '../mocks/db';
@@ -38,5 +42,33 @@ describe('ProductList component', () => {
     render(<ProductList />);
 
     expect(await screen.findByText(/error/i)).toBeInTheDocument();
+  });
+
+  it('should render loading text while fetching data', async () => {
+    server.use(
+      http.get('products', async () => {
+        await delay();
+
+        return HttpResponse.json([]);
+      })
+    );
+
+    render(<ProductList />);
+
+    expect(await screen.findByText(/loading/i)).toBeInTheDocument();
+  });
+
+  it('should remove the loading message when data is fetched', async () => {
+    render(<ProductList />);
+
+    await waitForElementToBeRemoved(() => screen.queryByText(/loading/i));
+  });
+
+  it('should remove the loading message if data fetching fails', async () => {
+    server.use(http.get('/products', () => HttpResponse.error()));
+
+    render(<ProductList />);
+
+    await waitForElementToBeRemoved(() => screen.queryByText(/loading/i));
   });
 });
