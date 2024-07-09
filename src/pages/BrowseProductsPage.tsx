@@ -1,69 +1,51 @@
-import { Select, Table } from "@radix-ui/themes";
-import axios, { AxiosError } from "axios";
-import { useEffect, useState } from "react";
-import Skeleton from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
-import QuantitySelector from "../components/QuantitySelector";
-import { Category, Product } from "../entities";
+import axios from 'axios';
+import { useQuery } from 'react-query';
+import { Category, Product } from '../entities';
+import { Select, Table } from '@radix-ui/themes';
+import { useState } from 'react';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
+import QuantitySelector from '../components/QuantitySelector';
 
 function BrowseProducts() {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [isProductsLoading, setProductsLoading] = useState(false);
-  const [isCategoriesLoading, setCategoriesLoading] = useState(false);
-  const [errorProducts, setErrorProducts] = useState("");
-  const [errorCategories, setErrorCategories] = useState("");
   const [selectedCategoryId, setSelectedCategoryId] = useState<
     number | undefined
   >();
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        setProductsLoading(true);
-        const { data } = await axios.get<Product[]>("/products");
-        setProducts(data);
-      } catch (error) {
-        if (error instanceof AxiosError) setErrorProducts(error.message);
-        else setErrorProducts("An unexpected error occurred");
-      } finally {
-        setProductsLoading(false);
-      }
-    };
+  const {
+    data: products,
+    isLoading: isProductsLoading,
+    error: errorProducts,
+  } = useQuery<Product[], Error>({
+    queryKey: ['products'],
+    queryFn: () => axios.get<Product[]>('/products').then(res => res.data),
+  });
 
-    const fetchCategories = async () => {
-      try {
-        setCategoriesLoading(true);
-        const { data } = await axios.get<Category[]>("/categories");
-        setCategories(data);
-      } catch (error) {
-        if (error instanceof AxiosError) setErrorCategories(error.message);
-        else setErrorCategories("An unexpected error occurred");
-      } finally {
-        setCategoriesLoading(false);
-      }
-    };
-    fetchCategories();
-    fetchProducts();
-  }, []);
+  const {
+    data: categories,
+    isLoading: isCategoriesLoading,
+    error: errorCategories,
+  } = useQuery<Category[], Error>({
+    queryKey: ['categories'],
+    queryFn: () => axios.get<Category[]>('/categories').then(res => res.data),
+  });
 
-  if (errorProducts) return <div>Error: {errorProducts}</div>;
+  if (errorProducts) return <div>Error: {errorProducts.message}</div>;
 
   const renderCategories = () => {
     if (isCategoriesLoading) return <Skeleton />;
-    if (errorCategories) return <div>Error: {errorCategories}</div>;
+    if (errorCategories) return <div>Error: {errorCategories.message}</div>;
     return (
       <Select.Root
-        onValueChange={(categoryId) =>
+        onValueChange={categoryId =>
           setSelectedCategoryId(parseInt(categoryId))
-        }
-      >
-        <Select.Trigger placeholder="Filter by Category" />
+        }>
+        <Select.Trigger placeholder='Filter by Category' />
         <Select.Content>
           <Select.Group>
             <Select.Label>Category</Select.Label>
-            <Select.Item value="all">All</Select.Item>
-            {categories?.map((category) => (
+            <Select.Item value='all'>All</Select.Item>
+            {categories?.map(category => (
               <Select.Item key={category.id} value={category.id.toString()}>
                 {category.name}
               </Select.Item>
@@ -80,7 +62,7 @@ function BrowseProducts() {
     if (errorProducts) return <div>Error: {errorProducts}</div>;
 
     const visibleProducts = selectedCategoryId
-      ? products.filter((p) => p.categoryId === selectedCategoryId)
+      ? products!.filter(p => p.categoryId === selectedCategoryId)
       : products;
 
     return (
@@ -94,7 +76,7 @@ function BrowseProducts() {
         </Table.Header>
         <Table.Body>
           {isProductsLoading &&
-            skeletons.map((skeleton) => (
+            skeletons.map(skeleton => (
               <Table.Row key={skeleton}>
                 <Table.Cell>
                   <Skeleton />
@@ -108,7 +90,7 @@ function BrowseProducts() {
               </Table.Row>
             ))}
           {!isProductsLoading &&
-            visibleProducts.map((product) => (
+            visibleProducts!.map(product => (
               <Table.Row key={product.id}>
                 <Table.Cell>{product.name}</Table.Cell>
                 <Table.Cell>${product.price}</Table.Cell>
@@ -125,7 +107,7 @@ function BrowseProducts() {
   return (
     <div>
       <h1>Products</h1>
-      <div className="max-w-xs">{renderCategories()}</div>
+      <div className='max-w-xs'>{renderCategories()}</div>
       {renderProducts()}
     </div>
   );
