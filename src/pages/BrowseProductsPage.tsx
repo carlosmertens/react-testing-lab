@@ -39,7 +39,9 @@ function BrowseProducts() {
           <Skeleton />
         </div>
       );
-    if (errorCategories) return <div>Error: {errorCategories.message}</div>;
+
+    if (errorCategories) return null;
+
     return (
       <Select.Root
         onValueChange={categoryId =>
