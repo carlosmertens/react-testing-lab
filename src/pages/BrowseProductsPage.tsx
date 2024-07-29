@@ -7,7 +7,7 @@ import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import QuantitySelector from '../components/QuantitySelector';
 
-function BrowseProducts() {
+export function BrowseProducts() {
   const [selectedCategoryId, setSelectedCategoryId] = useState<
     number | undefined
   >();
@@ -121,5 +121,3 @@ function BrowseProducts() {
     </div>
   );
 }
-
-export default BrowseProducts;
